@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>WaterSquared — Plant List</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
+<script>
+tailwind.config = { darkMode:"class", theme:{ extend:{
+  colors:{ bg:"#04161A", panel:"#0a2227", "panel-2":"#0e2a30", border:"#1d3a3d", ink:"#c5e9ea", muted:"#8aa0a1", green:"#4ADE80", amber:"#FBBF24", red:"#ff7a85" },
+  fontFamily:{ body:["Inter"], mono:["JetBrains Mono"] }, spacing:{ "sidebar":"240px", "header":"56px" }
+}}};
+</script>
+<style>
+  html,body{ background:#04161A; color:#c5e9ea; font-family:Inter,sans-serif; }
+  .mono{ font-family:'JetBrains Mono',monospace; }
+  .panel{ background:#0a2227; border:1px solid #1d3a3d; }
+  .lab{ font-size:11px; letter-spacing:.06em; font-weight:700; text-transform:uppercase; }
+  .navlink{ display:flex; align-items:center; gap:12px; padding:11px 16px; color:#8aa0a1; cursor:pointer; transition:.15s; border-left:2px solid transparent; text-decoration:none; }
+  .navlink:hover{ color:#c5e9ea; background:rgba(74,222,128,.06); }
+  .navlink.active{ color:#4ADE80; border-left-color:#4ADE80; background:rgba(74,222,128,.08); }
+  .navlink.inert{ opacity:.55; cursor:default; } .navlink.inert:hover{ color:#8aa0a1; background:transparent; }
+  .material-symbols-outlined{ font-size:20px; }
+  ::-webkit-scrollbar{ width:8px; } ::-webkit-scrollbar-thumb{ background:#1d3a3d; border-radius:4px; }
+  tbody tr{ cursor:pointer; } tbody tr:hover{ background:rgba(74,222,128,.05); }
+</style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+<!-- SIDEBAR -->
+<nav class="fixed left-0 top-0 h-full w-sidebar panel border-r flex flex-col z-[1000]">
+  <a href="index.html" class="px-4 py-4 border-b border-border flex items-center gap-3">
+    <div class="w-9 h-9 rounded-lg bg-green/15 border border-green/40 flex items-center justify-center">
+      <span class="material-symbols-outlined text-green" style="font-variation-settings:'FILL' 1;">eco</span></div>
+    <div><h1 class="text-[19px] font-bold text-green leading-none">WaterSquared</h1><p class="text-[12px] text-muted mt-1">Utility Operations</p></div>
+  </a>
+  <div class="flex-1 py-2">
+    <a href="index.html" class="navlink"><span class="material-symbols-outlined">map</span>Map</a>
+    <a href="plantlist.html" class="navlink active"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">factory</span>Plant List</a>
+    <a href="impact.html" class="navlink"><span class="material-symbols-outlined">trending_up</span>Forecasts</a>
+    <div class="navlink inert"><span class="material-symbols-outlined">assessment</span>Reports</div>
+  </div>
+  <div class="border-t border-border py-2">
+    <div class="navlink inert"><span class="material-symbols-outlined">settings</span>Settings</div>
+    <div class="navlink inert"><span class="material-symbols-outlined">help</span>Support</div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="flex-1 ml-sidebar flex flex-col h-screen">
+  <header class="h-header panel border-b flex justify-between items-center px-4 shrink-0">
+    <div class="flex items-center gap-2 bg-bg border border-border rounded-lg px-3 py-1.5 w-72">
+      <span class="material-symbols-outlined text-muted" style="font-size:18px;">search</span>
+      <input id="search" class="bg-transparent border-none outline-none text-ink text-[13px] w-full placeholder:text-muted" placeholder="Filter plants…">
+    </div>
+    <div class="flex items-center gap-5 text-muted">
+      <span class="material-symbols-outlined cursor-pointer hover:text-green">notifications</span>
+      <span class="material-symbols-outlined cursor-pointer hover:text-green">account_circle</span>
+      <span class="text-[13px] border-l border-border pl-5">Daniel Chen · <span class="text-ink">Alectra</span></span>
+    </div>
+  </header>
+
+  <div class="flex-1 overflow-y-auto p-6">
+    <div class="flex items-end justify-between mb-5">
+      <div>
+        <h2 class="text-[26px] font-semibold text-ink">Plant List</h2>
+        <p class="text-[13px] text-muted mt-1"><span id="count"></span> facilities across the Ontario network</p>
+      </div>
+      <div class="flex items-center gap-3 text-[13px] text-muted">
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green"></span>Optimal</span>
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber"></span>Warning</span>
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red"></span>Critical</span>
+      </div>
+    </div>
+
+    <div class="panel rounded-xl overflow-hidden">
+      <table class="w-full text-[14px]">
+        <thead><tr class="lab text-muted text-left border-b border-border bg-panel-2">
+          <th class="px-4 py-3 font-bold">Plant</th>
+          <th class="px-4 py-3 font-bold">ID</th>
+          <th class="px-4 py-3 font-bold">Type</th>
+          <th class="px-4 py-3 font-bold">Methane Yield</th>
+          <th class="px-4 py-3 font-bold">Power</th>
+          <th class="px-4 py-3 font-bold">Status</th>
+          <th class="px-4 py-3 font-bold"></th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="plants.js"></script>
+<script>
+const stMap = {
+  Optimal:{ d:"bg-green", c:"text-green border-green/40 bg-green/10" },
+  Warning:{ d:"bg-amber", c:"text-amber border-amber/40 bg-amber/10" },
+  Critical:{ d:"bg-red", c:"text-red border-red/40 bg-red/10" }
+};
+const rows = document.getElementById('rows');
+function render(filter=""){
+  rows.innerHTML = "";
+  const f = filter.toLowerCase();
+  let n = 0;
+  WS_ORDER.forEach(id=>{
+    const p = WS_PLANTS[id];
+    if(f && !(p.name+" "+p.id+" "+p.type+" "+p.city).toLowerCase().includes(f)) return;
+    n++;
+    const s = stMap[p.status];
+    const tr = document.createElement('tr');
+    tr.className = "border-b border-border/60";
+    tr.onclick = ()=> location.href = "plant.html?id="+p.id;
+    tr.innerHTML = `
+      <td class="px-4 py-3"><div class="text-ink font-medium">${p.name}</div><div class="lab text-muted font-medium">${p.city}</div></td>
+      <td class="px-4 py-3 mono text-muted">${p.id}</td>
+      <td class="px-4 py-3 text-muted">${p.type}</td>
+      <td class="px-4 py-3 mono text-ink">${p.yield} <span class="text-muted">m³/h</span> <span class="${p.yieldDelta.startsWith('-')?'text-red':'text-green'}">${p.yieldDelta}</span></td>
+      <td class="px-4 py-3 mono text-ink">${p.power} <span class="text-muted">MW</span></td>
+      <td class="px-4 py-3"><span class="inline-flex items-center gap-1.5 text-[12px] border rounded-full px-2.5 py-1 ${s.c}"><span class="w-1.5 h-1.5 rounded-full ${s.d}"></span>${p.status}</span></td>
+      <td class="px-4 py-3 text-right"><span class="material-symbols-outlined text-muted">chevron_right</span></td>`;
+    rows.appendChild(tr);
+  });
+  document.getElementById('count').textContent = n;
+}
+render();
+document.getElementById('search').addEventListener('input', e=>render(e.target.value));
+</script>
+</body>
+</html>
